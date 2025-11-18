@@ -1,0 +1,403 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Promocar • App Oficial v5</title>
+
+<!-- Ícone simples estilo Promocar (para aparecer no celular como app) -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23000000'/%3E%3Ctext x='50' y='58' font-size='40' text-anchor='middle' fill='%23ffffff' font-family='Arial'%3EP%3C/text%3E%3C/svg%3E">
+
+<style>
+  :root {
+    --red: #C00000;
+    --bg: #050505;
+    --card: #141414;
+    --text: #ffffff;
+    --muted: #b3b3b3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    background: linear-gradient(135deg, #C00000 0%, #900000 35%, #000000 90%);
+    padding: 26px 12px 18px 12px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    overflow: hidden;
+  }
+  header::after {
+    content: "";
+    position: absolute;
+    top: -80px;
+    left: -120px;
+    width: 250%;
+    height: 250%;
+    background: linear-gradient(120deg, rgba(255,255,255,0.25), transparent 60%);
+    transform: translateX(-150%);
+    animation: shine 4s infinite;
+    pointer-events: none;
+  }
+  @keyframes shine {
+    0%   { transform: translateX(-150%); }
+    40%  { transform: translateX(150%); }
+    100% { transform: translateX(150%); }
+  }
+  .subtitle { font-size: 12px; opacity: 0.85; }
+  .date { font-size: 13px; margin-top: 4px; color: var(--muted); }
+
+  /* PÁGINAS FULLSCREEN */
+  .page {
+    position: absolute;
+    top: 70px;
+    left: 100%;
+    width: 100vw;
+    height: calc(100vh - 120px);
+    padding: 16px;
+    overflow-y: auto;
+    transition: left 0.3s ease-out;
+  }
+  .activePage {
+    left: 0;
+  }
+
+  /* CARDS */
+  .card {
+    background: radial-gradient(circle at top left, #262626, #111);
+    border-radius: 14px;
+    padding: 16px;
+    border: 1px solid rgba(255,0,0,0.18);
+    box-shadow: 0 0 18px rgba(255,0,0,0.22);
+    margin-bottom: 18px;
+  }
+  .card h2 {
+    margin-top: 0;
+    margin-bottom: 6px;
+    color: #ff4444;
+    text-shadow: 0 0 8px #C00000;
+    font-size: 18px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.06);
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .item {
+    font-size: 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+  }
+  .checkbox {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 70px;
+    border-radius: 10px;
+    border: 1px solid #444;
+    background: #101010;
+    color: white;
+    padding: 8px;
+    font-size: 13px;
+    resize: vertical;
+  }
+
+  .button {
+    display: block;
+    padding: 10px 12px;
+    background: var(--red);
+    border-radius: 9px;
+    text-align: center;
+    margin-top: 10px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    border: none;
+    box-shadow: 0 0 12px rgba(255,0,0,0.28);
+  }
+  .button:hover { background: #a00000; }
+
+  .images-preview {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+  }
+  .images-preview img {
+    width: 80px;
+    height: 80px;
+    border-radius: 9px;
+    object-fit: cover;
+    border: 1px solid #333;
+  }
+
+  /* NAVBAR */
+  .nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #101010;
+    border-top: 1px solid #333;
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0 6px 0;
+  }
+  .nav button {
+    background: none;
+    border: none;
+    color: #b3b3b3;
+    font-size: 11px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .nav button .icon {
+    font-size: 18px;
+  }
+  .nav button.activeNav {
+    color: #ff4444;
+    font-weight: bold;
+    text-shadow: 0 0 7px #C00000;
+  }
+
+  @media (min-width: 900px) {
+    body { overflow: hidden; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  PROMOCAR • APP OFICIAL
+  <div class="subtitle">Rotina diária · Conteúdo · Gestão</div>
+  <div id="dateDisplay" class="date"></div>
+</header>
+
+<!-- PÁGINA ROTINA -->
+<div id="page-rotina" class="page activePage">
+  <div class="card">
+    <div class="badge">Rotina do dia</div>
+    <h2>Checklist completo</h2>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />08:00 – Gravar bom dia</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />08:06 – 09:00 – Fotos + vídeos curtos</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />09:00 – 10:20 – Edição da manhã</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />10:20 – 12:00 – Anúncios (AutoConf + portais + marketplace)</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />12:00 – 13:00 – Almoço + leads leves</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />13:00 – 14:00 – Gestão (atendimentos, follow-ups, leads quentes)</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />14:00 – 15:00 – Vídeos da tarde</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />15:00 – 15:40 – Edição da tarde</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />15:40 – 16:30 – Marketplace + ajustes</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />16:30 – 17:30 – Fechamento do dia</div>
+  </div>
+
+  <div class="card">
+    <div class="badge">Prioridades</div>
+    <h2>Top 3 do dia</h2>
+    <small style="color:var(--muted); font-size:12px;">Escreva o que NÃO pode faltar hoje. Salva automático no aparelho.</small>
+    <textarea id="prioridades" oninput="salvarPrioridades(this)" placeholder="Ex.: Subir 8 anúncios, gravar 10 vídeos, focar leads quentes do HB20..."></textarea>
+  </div>
+</div>
+
+<!-- PÁGINA VÍDEOS -->
+<div id="page-videos" class="page">
+  <div class="card">
+    <div class="badge">Produção</div>
+    <h2>Vídeos do dia</h2>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />Vídeos da manhã (3–5)</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />Vídeos da tarde (3–5)</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />Vídeo de fechamento</div>
+    <button class="button" type="button" onclick="abrirCamera()">Abrir câmera</button>
+    <input id="cameraInput" type="file" accept="image/*" capture="environment" multiple style="display:none" onchange="onCameraChange(event)">
+    <div id="preview" class="images-preview"></div>
+  </div>
+
+  <div class="card">
+    <div class="badge">Guia rápido</div>
+    <h2>Guia de gravação</h2>
+    <ul style="padding-left:18px; margin-top:8px; font-size:13px; color:var(--muted);">
+      <li>Comece com chamada forte: nome da Promocar + oferta.</li>
+      <li>Mostre frente, lateral, traseira e interior rápido.</li>
+      <li>Fale 2–3 benefícios claros (economia, conforto, ano, KM).</li>
+      <li>Sempre finalize com CTA: “Me chama aqui no WhatsApp agora”.</li>
+      <li>Mantenha os vídeos entre 10 e 25 segundos.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- PÁGINA ANÚNCIOS -->
+<div id="page-anuncios" class="page">
+  <div class="card">
+    <div class="badge">Anúncios</div>
+    <h2>Fluxo AutoConf + Portais</h2>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />Subir fotos no AutoConf</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />Preencher dados obrigatórios</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />Publicar nos 7 portais</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />Conferir anúncio no site da loja</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />Baixar fotos e subir no Marketplace</div>
+    <a class="button" href="https://app.autoconf.com.br/" target="_blank">Abrir AutoConf</a>
+  </div>
+
+  <div class="card">
+    <div class="badge">Contato rápido</div>
+    <h2>WhatsApp Comercial</h2>
+    <small style="color:var(--muted); font-size:12px;">Abre conversa direto com o comercial da Promocar.</small>
+    <a class="button" href="https://wa.me/5534999201767" target="_blank">Abrir WhatsApp Comercial</a>
+  </div>
+</div>
+
+<!-- PÁGINA MODO CHUVA -->
+<div id="page-chuva" class="page">
+  <div class="card">
+    <div class="badge">Plano B</div>
+    <h2>Modo Chuva – Conteúdo interno</h2>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />Gravar vídeos no showroom (carros em destaque)</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />Gravar vitrine, estrutura e detalhes da loja</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />Gravar depoimento de vendedor ou cliente</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />Gravar vídeo institucional (campanha, taxa, condições)</div>
+  </div>
+
+  <div class="card">
+    <div class="badge">Organização</div>
+    <h2>Ajustes em dia de chuva</h2>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />Atualizar anúncios antigos</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />Revisar textos e preços</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />Responder leads parados</div>
+    <div class="item"><input type="checkbox" class="checkbox" onchange="saveState()" />Planejar roteiros para dias de sol</div>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<div class="nav">
+  <button id="nav-rotina" class="activeNav" type="button" onclick="showPage('rotina')">
+    <span class="icon">🏠</span>
+    Rotina
+  </button>
+  <button id="nav-videos" type="button" onclick="showPage('videos')">
+    <span class="icon">🎥</span>
+    Vídeos
+  </button>
+  <button id="nav-anuncios" type="button" onclick="showPage('anuncios')">
+    <span class="icon">📤</span>
+    Anúncios
+  </button>
+  <button id="nav-chuva" type="button" onclick="showPage('chuva')">
+    <span class="icon">🌧️</span>
+    Chuva
+  </button>
+</div>
+
+<script>
+function getTodayKey() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = ('0' + (d.getMonth()+1)).slice(-2);
+  const day = ('0' + d.getDate()).slice(-2);
+  return y + '-' + m + '-' + day;
+}
+
+function dailyResetIfNeeded() {
+  const today = getTodayKey();
+  const last = localStorage.getItem('lastDate');
+  const checks = document.querySelectorAll("input[type='checkbox']");
+  if (last !== today) {
+    checks.forEach(c => c.checked = false);
+    localStorage.setItem('lastDate', today);
+  }
+}
+
+function saveState() {
+  const checks = document.querySelectorAll("input[type='checkbox']");
+  checks.forEach((c, i) => {
+    localStorage.setItem('check'+i, c.checked);
+  });
+  localStorage.setItem('lastDate', getTodayKey());
+}
+
+function loadState() {
+  dailyResetIfNeeded();
+  const checks = document.querySelectorAll("input[type='checkbox']");
+  checks.forEach((c, i) => {
+    const saved = localStorage.getItem('check'+i);
+    if (saved === 'true') c.checked = true;
+  });
+  const txt = localStorage.getItem('prioridades');
+  if (txt) {
+    const area = document.getElementById('prioridades');
+    if (area) area.value = txt;
+  }
+}
+
+function salvarPrioridades(el) {
+  localStorage.setItem('prioridades', el.value);
+}
+
+function setDate() {
+  const d = new Date();
+  const opts = { weekday: 'long', day: '2-digit', month: '2-digit' };
+  const s = d.toLocaleDateString('pt-BR', opts);
+  const el = document.getElementById('dateDisplay');
+  if (el) el.textContent = s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function abrirCamera() {
+  const input = document.getElementById('cameraInput');
+  if (input) input.click();
+}
+
+function onCameraChange(event) {
+  const files = event.target.files;
+  const preview = document.getElementById('preview');
+  preview.innerHTML = '';
+  if (!files || files.length === 0) return;
+  Array.from(files).forEach(file => {
+    if (!file.type.startsWith('image/')) return;
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    preview.appendChild(img);
+  });
+}
+
+function showPage(slug) {
+  const pages = ['rotina','videos','anuncios','chuva'];
+  pages.forEach(p => {
+    const pageEl = document.getElementById('page-'+p);
+    const navEl  = document.getElementById('nav-'+p);
+    if (p === slug) {
+      pageEl.classList.add('activePage');
+      navEl.classList.add('activeNav');
+    } else {
+      pageEl.classList.remove('activePage');
+      navEl.classList.remove('activeNav');
+    }
+  });
+}
+
+window.onload = function() {
+  loadState();
+  setDate();
+};
+</script>
+
+</body>
+</html>

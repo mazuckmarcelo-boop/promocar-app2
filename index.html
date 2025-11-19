@@ -1,190 +1,234 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Promocar • App Oficial v5</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promocar • App Oficial</title>
 
-<!-- Ícone simples estilo Promocar (para aparecer no celular como app) -->
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23000000'/%3E%3Ctext x='50' y='58' font-size='40' text-anchor='middle' fill='%23ffffff' font-family='Arial'%3EP%3C/text%3E%3C/svg%3E">
+  <!-- Ícone simples estilo Promocar -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23000000'/%3E%3Ctext x='50' y='58' font-size='40' text-anchor='middle' fill='%23ffffff' font-family='Arial'%3EP%3C/text%3E%3C/svg%3E">
+  <meta name="theme-color" content="#000000">
 
-<style>
-  :root {
-    --red: #C00000;
-    --bg: #050505;
-    --card: #141414;
-    --text: #ffffff;
-    --muted: #b3b3b3;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    overflow: hidden;
-  }
+  <style>
+    :root {
+      --red: #C00000;
+      --bg: #050505;
+      --card: #141414;
+      --text: #ffffff;
+      --muted: #b3b3b3;
+      --ok: #18c46a;
+      --warn: #ffc94d;
+      --urgent: #ff5b5b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
 
-  /* HEADER */
-  header {
-    position: relative;
-    background: linear-gradient(135deg, #C00000 0%, #900000 35%, #000000 90%);
-    padding: 26px 12px 18px 12px;
-    text-align: center;
-    font-size: 22px;
-    font-weight: bold;
-    letter-spacing: 1px;
-    overflow: hidden;
-  }
-  header::after {
-    content: "";
-    position: absolute;
-    top: -80px;
-    left: -120px;
-    width: 250%;
-    height: 250%;
-    background: linear-gradient(120deg, rgba(255,255,255,0.25), transparent 60%);
-    transform: translateX(-150%);
-    animation: shine 4s infinite;
-    pointer-events: none;
-  }
-  @keyframes shine {
-    0%   { transform: translateX(-150%); }
-    40%  { transform: translateX(150%); }
-    100% { transform: translateX(150%); }
-  }
-  .subtitle { font-size: 12px; opacity: 0.85; }
-  .date { font-size: 13px; margin-top: 4px; color: var(--muted); }
+    /* HEADER */
+    header {
+      position: relative;
+      background: linear-gradient(135deg, #C00000 0%, #900000 35%, #000000 90%);
+      padding: 26px 12px 18px 12px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      overflow: hidden;
+    }
+    header::after {
+      content: "";
+      position: absolute;
+      top: -80px;
+      left: -120px;
+      width: 250%;
+      height: 250%;
+      background: linear-gradient(120deg, rgba(255,255,255,0.25), transparent 60%);
+      transform: translateX(-150%);
+      animation: shine 4s infinite;
+      pointer-events: none;
+    }
+    @keyframes shine {
+      0%   { transform: translateX(-150%); }
+      40%  { transform: translateX(150%); }
+      100% { transform: translateX(150%); }
+    }
+    .subtitle { font-size: 12px; opacity: 0.85; }
+    .date { font-size: 13px; margin-top: 4px; color: var(--muted); }
 
-  /* PÁGINAS FULLSCREEN */
-  .page {
-    position: absolute;
-    top: 70px;
-    left: 100%;
-    width: 100vw;
-    height: calc(100vh - 120px);
-    padding: 16px;
-    overflow-y: auto;
-    transition: left 0.3s ease-out;
-  }
-  .activePage {
-    left: 0;
-  }
+    /* PÁGINAS FULLSCREEN */
+    .page {
+      position: absolute;
+      top: 70px;
+      left: 100%;
+      width: 100vw;
+      height: calc(100vh - 120px);
+      padding: 16px;
+      overflow-y: auto;
+      transition: left 0.3s ease-out;
+    }
+    .activePage { left: 0; }
 
-  /* CARDS */
-  .card {
-    background: radial-gradient(circle at top left, #262626, #111);
-    border-radius: 14px;
-    padding: 16px;
-    border: 1px solid rgba(255,0,0,0.18);
-    box-shadow: 0 0 18px rgba(255,0,0,0.22);
-    margin-bottom: 18px;
-  }
-  .card h2 {
-    margin-top: 0;
-    margin-bottom: 6px;
-    color: #ff4444;
-    text-shadow: 0 0 8px #C00000;
-    font-size: 18px;
-  }
-  .badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.06);
-    font-size: 11px;
-    color: var(--muted);
-    margin-bottom: 6px;
-  }
-  .item {
-    font-size: 14px;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-  }
-  .checkbox {
-    width: 18px;
-    height: 18px;
-    margin-right: 8px;
-  }
+    /* CARDS */
+    .card {
+      background: radial-gradient(circle at top left, #262626, #111);
+      border-radius: 14px;
+      padding: 16px;
+      border: 1px solid rgba(255,0,0,0.18);
+      box-shadow: 0 0 18px rgba(255,0,0,0.22);
+      margin-bottom: 18px;
+    }
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 6px;
+      color: #ff4444;
+      text-shadow: 0 0 8px #C00000;
+      font-size: 18px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .item {
+      font-size: 14px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+    }
+    .checkbox {
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 70px;
+      border-radius: 10px;
+      border: 1px solid #444;
+      background: #101010;
+      color: white;
+      padding: 8px;
+      font-size: 13px;
+      resize: vertical;
+    }
+    .button {
+      display: block;
+      padding: 10px 12px;
+      background: var(--red);
+      border-radius: 9px;
+      text-align: center;
+      margin-top: 10px;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      border: none;
+      box-shadow: 0 0 12px rgba(255,0,0,0.28);
+    }
+    .button:hover { background: #a00000; }
 
-  textarea {
-    width: 100%;
-    min-height: 70px;
-    border-radius: 10px;
-    border: 1px solid #444;
-    background: #101010;
-    color: white;
-    padding: 8px;
-    font-size: 13px;
-    resize: vertical;
-  }
+    .images-preview {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+    }
+    .images-preview img {
+      width: 80px;
+      height: 80px;
+      border-radius: 9px;
+      object-fit: cover;
+      border: 1px solid #333;
+    }
 
-  .button {
-    display: block;
-    padding: 10px 12px;
-    background: var(--red);
-    border-radius: 9px;
-    text-align: center;
-    margin-top: 10px;
-    text-decoration: none;
-    color: white;
-    font-weight: bold;
-    font-size: 14px;
-    border: none;
-    box-shadow: 0 0 12px rgba(255,0,0,0.28);
-  }
-  .button:hover { background: #a00000; }
+    /* NAVBAR */
+    .nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #101010;
+      border-top: 1px solid #333;
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0 6px 0;
+    }
+    .nav button {
+      background: none;
+      border: none;
+      color: #b3b3b3;
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .nav button .icon {
+      font-size: 18px;
+    }
+    .nav button.activeNav {
+      color: #ff4444;
+      font-weight: bold;
+      text-shadow: 0 0 7px #C00000;
+    }
 
-  .images-preview {
-    margin-top: 10px;
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-  }
-  .images-preview img {
-    width: 80px;
-    height: 80px;
-    border-radius: 9px;
-    object-fit: cover;
-    border: 1px solid #333;
-  }
+    /* PORTAIS – TABELA */
+    .portais-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .portais-table th,
+    .portais-table td {
+      padding: 6px 4px;
+      text-align: left;
+    }
+    .portais-table thead {
+      border-bottom: 1px solid #333;
+      color: var(--muted);
+    }
+    .portais-table input[type="text"],
+    .portais-table input[type="number"],
+    .portais-table input[type="date"] {
+      width: 100%;
+      background: #101010;
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: white;
+      font-size: 12px;
+      padding: 4px 6px;
+    }
+    .status-pill {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+    .status-ok { background: rgba(24,196,106,0.18); color: var(--ok); }
+    .status-warn { background: rgba(255,201,77,0.18); color: var(--warn); }
+    .status-urgent { background: rgba(255,91,91,0.18); color: var(--urgent); }
+    .status-expired { background: rgba(180,50,50,0.3); color: #ff8b8b; }
 
-  /* NAVBAR */
-  .nav {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: #101010;
-    border-top: 1px solid #333;
-    display: flex;
-    justify-content: space-around;
-    padding: 8px 0 6px 0;
-  }
-  .nav button {
-    background: none;
-    border: none;
-    color: #b3b3b3;
-    font-size: 11px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-  }
-  .nav button .icon {
-    font-size: 18px;
-  }
-  .nav button.activeNav {
-    color: #ff4444;
-    font-weight: bold;
-    text-shadow: 0 0 7px #C00000;
-  }
+    .portais-total {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .portais-total strong { color: #ffdf6b; }
 
-  @media (min-width: 900px) {
-    body { overflow: hidden; }
-  }
-</style>
+    @media (min-width: 900px) {
+      body { overflow: hidden; }
+    }
+  </style>
 </head>
 <body>
 
@@ -287,6 +331,36 @@
   </div>
 </div>
 
+<!-- PÁGINA PORTAIS (NOVA) -->
+<div id="page-portais" class="page">
+  <div class="card">
+    <div class="badge">Gestão de Portais</div>
+    <h2>Custos & vencimentos</h2>
+    <small style="color:var(--muted); font-size:12px;">
+      Edite os valores e datas. Tudo fica salvo neste aparelho. As cores indicam o risco:
+      <strong>Verde = OK</strong>, <strong>Amarelo = Atenção</strong>, <strong>Vermelho = Urgente</strong>, <strong>Vencido</strong>.
+    </small>
+
+    <div style="margin-top:10px; overflow-x:auto;">
+      <table class="portais-table">
+        <thead>
+          <tr>
+            <th>Portal</th>
+            <th>Custo/mês (R$)</th>
+            <th>Vencimento</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="portais-body">
+          <!-- linhas geradas via JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="portais-total" id="portais-total"></div>
+  </div>
+</div>
+
 <!-- NAVBAR -->
 <div class="nav">
   <button id="nav-rotina" class="activeNav" type="button" onclick="showPage('rotina')">
@@ -301,6 +375,10 @@
     <span class="icon">📤</span>
     Anúncios
   </button>
+  <button id="nav-portais" type="button" onclick="showPage('portais')">
+    <span class="icon">🌐</span>
+    Portais
+  </button>
   <button id="nav-chuva" type="button" onclick="showPage('chuva')">
     <span class="icon">🌧️</span>
     Chuva
@@ -308,95 +386,232 @@
 </div>
 
 <script>
-function getTodayKey() {
-  const d = new Date();
-  const y = d.getFullYear();
-  const m = ('0' + (d.getMonth()+1)).slice(-2);
-  const day = ('0' + d.getDate()).slice(-2);
-  return y + '-' + m + '-' + day;
-}
-
-function dailyResetIfNeeded() {
-  const today = getTodayKey();
-  const last = localStorage.getItem('lastDate');
-  const checks = document.querySelectorAll("input[type='checkbox']");
-  if (last !== today) {
-    checks.forEach(c => c.checked = false);
-    localStorage.setItem('lastDate', today);
+  function getTodayKey() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = ('0' + (d.getMonth()+1)).slice(-2);
+    const day = ('0' + d.getDate()).slice(-2);
+    return y + '-' + m + '-' + day;
   }
-}
 
-function saveState() {
-  const checks = document.querySelectorAll("input[type='checkbox']");
-  checks.forEach((c, i) => {
-    localStorage.setItem('check'+i, c.checked);
-  });
-  localStorage.setItem('lastDate', getTodayKey());
-}
-
-function loadState() {
-  dailyResetIfNeeded();
-  const checks = document.querySelectorAll("input[type='checkbox']");
-  checks.forEach((c, i) => {
-    const saved = localStorage.getItem('check'+i);
-    if (saved === 'true') c.checked = true;
-  });
-  const txt = localStorage.getItem('prioridades');
-  if (txt) {
-    const area = document.getElementById('prioridades');
-    if (area) area.value = txt;
-  }
-}
-
-function salvarPrioridades(el) {
-  localStorage.setItem('prioridades', el.value);
-}
-
-function setDate() {
-  const d = new Date();
-  const opts = { weekday: 'long', day: '2-digit', month: '2-digit' };
-  const s = d.toLocaleDateString('pt-BR', opts);
-  const el = document.getElementById('dateDisplay');
-  if (el) el.textContent = s.charAt(0).toUpperCase() + s.slice(1);
-}
-
-function abrirCamera() {
-  const input = document.getElementById('cameraInput');
-  if (input) input.click();
-}
-
-function onCameraChange(event) {
-  const files = event.target.files;
-  const preview = document.getElementById('preview');
-  preview.innerHTML = '';
-  if (!files || files.length === 0) return;
-  Array.from(files).forEach(file => {
-    if (!file.type.startsWith('image/')) return;
-    const img = document.createElement('img');
-    img.src = URL.createObjectURL(file);
-    preview.appendChild(img);
-  });
-}
-
-function showPage(slug) {
-  const pages = ['rotina','videos','anuncios','chuva'];
-  pages.forEach(p => {
-    const pageEl = document.getElementById('page-'+p);
-    const navEl  = document.getElementById('nav-'+p);
-    if (p === slug) {
-      pageEl.classList.add('activePage');
-      navEl.classList.add('activeNav');
-    } else {
-      pageEl.classList.remove('activePage');
-      navEl.classList.remove('activeNav');
+  function dailyResetIfNeeded() {
+    const today = getTodayKey();
+    const last = localStorage.getItem('lastDate');
+    const checks = document.querySelectorAll("input[type='checkbox']");
+    if (last !== today) {
+      checks.forEach(c => c.checked = false);
+      localStorage.setItem('lastDate', today);
     }
-  });
-}
+  }
 
-window.onload = function() {
-  loadState();
-  setDate();
-};
+  function saveState() {
+    const checks = document.querySelectorAll("input[type='checkbox']");
+    checks.forEach((c, i) => {
+      localStorage.setItem('check'+i, c.checked);
+    });
+    localStorage.setItem('lastDate', getTodayKey());
+  }
+
+  function loadState() {
+    dailyResetIfNeeded();
+    const checks = document.querySelectorAll("input[type='checkbox']");
+    checks.forEach((c, i) => {
+      const saved = localStorage.getItem('check'+i);
+      if (saved === 'true') c.checked = true;
+    });
+    const txt = localStorage.getItem('prioridades');
+    if (txt) {
+      const area = document.getElementById('prioridades');
+      if (area) area.value = txt;
+    }
+  }
+
+  function salvarPrioridades(el) {
+    localStorage.setItem('prioridades', el.value);
+  }
+
+  function setDate() {
+    const d = new Date();
+    const opts = { weekday: 'long', day: '2-digit', month: '2-digit' };
+    const s = d.toLocaleDateString('pt-BR', opts);
+    const el = document.getElementById('dateDisplay');
+    if (el) el.textContent = s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
+  function abrirCamera() {
+    const input = document.getElementById('cameraInput');
+    if (input) input.click();
+  }
+
+  function onCameraChange(event) {
+    const files = event.target.files;
+    const preview = document.getElementById('preview');
+    preview.innerHTML = '';
+    if (!files || files.length === 0) return;
+    Array.from(files).forEach(file => {
+      if (!file.type.startsWith('image/')) return;
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(file);
+      preview.appendChild(img);
+    });
+  }
+
+  function showPage(slug) {
+    const pages = ['rotina','videos','anuncios','portais','chuva'];
+    pages.forEach(p => {
+      const pageEl = document.getElementById('page-'+p);
+      const navEl  = document.getElementById('nav-'+p);
+      if (pageEl && navEl) {
+        if (p === slug) {
+          pageEl.classList.add('activePage');
+          navEl.classList.add('activeNav');
+        } else {
+          pageEl.classList.remove('activePage');
+          navEl.classList.remove('activeNav');
+        }
+      }
+    });
+  }
+
+  /* ===== PORTAIS ===== */
+  const DEFAULT_PORTAIS = [
+    { nome: 'Webmotors', custo: 0, vencimento: '' },
+    { nome: 'OLX / Bom Negócio', custo: 0, vencimento: '' },
+    { nome: 'iCarros', custo: 0, vencimento: '' },
+    { nome: 'Facebook / Instagram Ads', custo: 0, vencimento: '' },
+    { nome: 'Google Ads', custo: 0, vencimento: '' }
+  ];
+
+  function loadPortais() {
+    let data = [];
+    try {
+      const saved = localStorage.getItem('portaisData');
+      data = saved ? JSON.parse(saved) : DEFAULT_PORTAIS;
+    } catch (e) {
+      data = DEFAULT_PORTAIS;
+    }
+
+    const tbody = document.getElementById('portais-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    data.forEach((p, idx) => {
+      const tr = document.createElement('tr');
+      tr.classList.add('portal-row');
+
+      const tdNome = document.createElement('td');
+      const inpNome = document.createElement('input');
+      inpNome.type = 'text';
+      inpNome.value = p.nome || '';
+      inpNome.dataset.index = idx;
+      inpNome.dataset.field = 'nome';
+      tdNome.appendChild(inpNome);
+
+      const tdCusto = document.createElement('td');
+      const inpCusto = document.createElement('input');
+      inpCusto.type = 'number';
+      inpCusto.step = '0.01';
+      inpCusto.min = '0';
+      inpCusto.value = p.custo || 0;
+      inpCusto.dataset.index = idx;
+      inpCusto.dataset.field = 'custo';
+      tdCusto.appendChild(inpCusto);
+
+      const tdVenc = document.createElement('td');
+      const inpVenc = document.createElement('input');
+      inpVenc.type = 'date';
+      inpVenc.value = p.vencimento || '';
+      inpVenc.dataset.index = idx;
+      inpVenc.dataset.field = 'vencimento';
+      tdVenc.appendChild(inpVenc);
+
+      const tdStatus = document.createElement('td');
+      const spanStatus = document.createElement('span');
+      spanStatus.classList.add('status-pill');
+      spanStatus.dataset.index = idx;
+      tdStatus.appendChild(spanStatus);
+
+      tr.appendChild(tdNome);
+      tr.appendChild(tdCusto);
+      tr.appendChild(tdVenc);
+      tr.appendChild(tdStatus);
+      tbody.appendChild(tr);
+    });
+
+    attachPortaisListeners();
+    updatePortaisStatus();
+  }
+
+  function attachPortaisListeners() {
+    const inputs = document.querySelectorAll('#portais-body input');
+    inputs.forEach(inp => {
+      inp.addEventListener('input', savePortais);
+    });
+  }
+
+  function savePortais() {
+    const rows = document.querySelectorAll('#portais-body .portal-row');
+    const data = [];
+    rows.forEach(row => {
+      const [inpNome, inpCusto, inpVenc] = row.querySelectorAll('input');
+      data.push({
+        nome: inpNome.value || '',
+        custo: parseFloat(inpCusto.value || '0'),
+        vencimento: inpVenc.value || ''
+      });
+    });
+    localStorage.setItem('portaisData', JSON.stringify(data));
+    updatePortaisStatus();
+  }
+
+  function updatePortaisStatus() {
+    const rows = document.querySelectorAll('#portais-body .portal-row');
+    const today = new Date();
+    let total = 0;
+
+    rows.forEach(row => {
+      const [inpNome, inpCusto, inpVenc] = row.querySelectorAll('input');
+      const spanStatus = row.querySelector('.status-pill');
+      const custo = parseFloat(inpCusto.value || '0');
+      total += isNaN(custo) ? 0 : custo;
+
+      const venc = inpVenc.value;
+      if (!venc) {
+        spanStatus.textContent = 'Sem data';
+        spanStatus.className = 'status-pill';
+        return;
+      }
+      const dVenc = new Date(venc + 'T23:59:59');
+      const diffDias = Math.round((dVenc - today) / (1000*60*60*24));
+
+      spanStatus.className = 'status-pill';
+
+      if (diffDias < 0) {
+        spanStatus.textContent = 'Vencido';
+        spanStatus.classList.add('status-expired');
+      } else if (diffDias <= 3) {
+        spanStatus.textContent = 'Urgente (' + diffDias + 'd)';
+        spanStatus.classList.add('status-urgent');
+      } else if (diffDias <= 10) {
+        spanStatus.textContent = 'Atenção (' + diffDias + 'd)';
+        spanStatus.classList.add('status-warn');
+      } else {
+        spanStatus.textContent = 'OK (' + diffDias + 'd)';
+        spanStatus.classList.add('status-ok');
+      }
+    });
+
+    const totalEl = document.getElementById('portais-total');
+    if (totalEl) {
+      totalEl.innerHTML = 'Total mensal previsto nos portais: <strong>R$ ' + total.toFixed(2) + '</strong>';
+    }
+  }
+
+  window.onload = function() {
+    loadState();
+    setDate();
+    loadPortais();
+  };
 </script>
 
 </body>
